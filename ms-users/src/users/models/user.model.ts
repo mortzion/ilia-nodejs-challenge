@@ -16,4 +16,7 @@ export class User {
 
   @Column({ type: 'varchar' })
   email: string;
+
+  @Column({ type: 'timestamp', nullable: true, default: null })
+  deleted_at: Date | null;
 }

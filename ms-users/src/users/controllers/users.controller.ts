@@ -2,8 +2,11 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   ForbiddenException,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -14,6 +17,7 @@ import { CreateUserAction } from '../actions/create-user.action';
 import { UpdateUserAction } from '../actions/update-user.action';
 import { GetUserAction } from '../actions/get-user.action';
 import { ListUsersAction } from '../actions/list-users.action';
+import { DeleteUserAction } from '../actions/delete-user.action';
 import { UserViewDto } from '../dtos/user-view.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { CurrentUserId } from 'src/decorators/current-user.decorator';
@@ -26,6 +30,7 @@ export class UsersController {
     private updateUserAction: UpdateUserAction,
     private getUserAction: GetUserAction,
     private listUsersAction: ListUsersAction,
+    private deleteUserAction: DeleteUserAction,
   ) {}
 
   @Public()
@@ -107,5 +112,16 @@ export class UsersController {
 
       throw error;
     }
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async deleteUser(
+    @Param('id') id: string,
+    @CurrentUserId() currentUserId: string,
+  ) {
+    if (id !== currentUserId) throw new ForbiddenException();
+
+    await this.deleteUserAction.execute(id);
   }
 }
