@@ -2,7 +2,6 @@ import 'reflect-metadata';
 
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { HealthCheckController } from './health-check.controller';
 import { TransactionModule } from './transactions/transaction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './transactions/models/transaction.model';
@@ -28,7 +27,7 @@ import { AuthGuard } from './guards/auth.guard';
     }),
     TransactionModule,
   ],
-  controllers: [HealthCheckController],
+  controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}
