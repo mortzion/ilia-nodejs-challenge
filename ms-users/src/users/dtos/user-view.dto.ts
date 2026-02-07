@@ -1,8 +1,8 @@
 export class UserViewDto {
   constructor(
-    private id: string,
-    private first_name: string,
-    private last_name: string,
-    private email: string,
+    public id: string,
+    public first_name: string,
+    public last_name: string,
+    public email: string,
   ) {}
 }
