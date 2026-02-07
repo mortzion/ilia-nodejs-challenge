@@ -7,11 +7,11 @@ export enum TransactionType {
 
 @Entity('transactions')
 export class Transaction {
-  @PrimaryColumn()
+  @PrimaryColumn({ type: 'uuid' })
   id: string;
 
-  @Column({ type: 'int4' })
-  user_id: number;
+  @Column({ type: 'uuid' })
+  user_id: string;
 
   @Column({ type: 'float' })
   amount: number;
