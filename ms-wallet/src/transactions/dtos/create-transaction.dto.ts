@@ -1,11 +1,11 @@
 import { TransactionType } from 'src/transactions/models/transaction.model';
-import { IsEnum, IsNumber } from 'class-validator';
+import { IsEnum, IsNumber, IsString } from 'class-validator';
 import { Expose } from 'class-transformer';
 
 export class CreateTransactionDto {
   @Expose()
-  @IsNumber()
-  user_id: number;
+  @IsString()
+  user_id: string;
 
   @Expose()
   @IsNumber()

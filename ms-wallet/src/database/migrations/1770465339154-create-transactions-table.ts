@@ -9,7 +9,7 @@ export class CreateTransactionsTable1770465339154 implements MigrationInterface 
     await queryRunner.query(`
         create table transactions(
             id uuid primary key,
-            user_id int4,
+            user_id uuid,
             amount float,
             type transaction_type,
             created_at timestamp default now()

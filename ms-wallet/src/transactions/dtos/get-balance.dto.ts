@@ -1,8 +1,6 @@
-import { Transform } from 'class-transformer';
-import { IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class GetBalanceDto {
-  @IsNumber()
-  @Transform((params) => Number(params.value))
-  user_id: number;
+  @IsString()
+  user_id: string;
 }
