@@ -26,6 +26,19 @@ export class UsersRepository {
     }
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return this.repository.findOne({
+      where: { email },
+      select: {
+        id: true,
+        email: true,
+        first_name: true,
+        last_name: true,
+        password: true,
+      },
+    });
+  }
+
   private isEmailUniqueConstraintViolation(error: any): boolean {
     return (
       'code' in error &&
