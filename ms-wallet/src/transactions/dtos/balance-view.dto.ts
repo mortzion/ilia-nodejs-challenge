@@ -1,3 +1,3 @@
 export class BalanceViewDto {
-  constructor(private amount: number) {}
+  constructor(public amount: number) {}
 }
