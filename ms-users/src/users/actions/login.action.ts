@@ -25,10 +25,7 @@ export class LoginAction {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const access_token = await this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-    });
+    const access_token = await this.jwtService.signAsync({ sub: user.id });
 
     return new AccessTokenDto(user, access_token);
   }
