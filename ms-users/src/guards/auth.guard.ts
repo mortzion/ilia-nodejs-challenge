@@ -5,9 +5,12 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { FastifyRequest } from 'fastify';
 import { Reflector } from '@nestjs/core';
 import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator';
+
+export interface AuthPayload {
+  sub: string;
+}
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -30,7 +33,8 @@ export class AuthGuard implements CanActivate {
     if (!token) throw new UnauthorizedException();
 
     try {
-      request['user'] = await this.jwtService.verifyAsync(token);
+      request['user'] = await this.jwtService.verifyAsync<AuthPayload>(token);
+      request['user_id'] = request['user'].sub;
 
       return true;
     } catch {
