@@ -8,6 +8,7 @@ import { CreateUserAction } from './actions/create-user.action';
 import { GetUserAction } from './actions/get-user.action';
 import { ListUsersAction } from './actions/list-users.action';
 import { UpdateUserAction } from './actions/update-user.action';
+import { DeleteUserAction } from './actions/delete-user.action';
 import { LoginAction } from './actions/login.action';
 
 @Module({
@@ -19,6 +20,7 @@ import { LoginAction } from './actions/login.action';
     GetUserAction,
     ListUsersAction,
     UpdateUserAction,
+    DeleteUserAction,
     LoginAction,
   ],
 })

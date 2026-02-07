@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { User } from '../models/user.model';
 import { EmailAlreadyInUseException } from '../exceptions/email-already-in-use.exception';
 
@@ -28,7 +28,7 @@ export class UsersRepository {
 
   async findByEmail(email: string): Promise<User | null> {
     return this.repository.findOne({
-      where: { email },
+      where: { email, deleted_at: IsNull() },
       select: {
         id: true,
         email: true,
@@ -41,12 +41,14 @@ export class UsersRepository {
 
   async findById(id: string): Promise<User | null> {
     return this.repository.findOne({
-      where: { id },
+      where: { id, deleted_at: IsNull() },
     });
   }
 
   async findAll(): Promise<User[]> {
-    return this.repository.find();
+    return this.repository.find({
+      where: { deleted_at: IsNull() },
+    });
   }
 
   async update(user: User): Promise<User> {
@@ -59,6 +61,15 @@ export class UsersRepository {
 
       throw error;
     }
+  }
+
+  async delete(id: string): Promise<boolean> {
+    const result = await this.repository.update(
+      { id, deleted_at: IsNull() },
+      { deleted_at: new Date() },
+    );
+
+    return result.affected !== undefined && result.affected > 0;
   }
 
   private isEmailUniqueConstraintViolation(error: any): boolean {
