@@ -4,6 +4,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -12,6 +13,8 @@ async function bootstrap() {
   );
 
   if (!process.env.PORT) throw new Error('PORT env missing');
+
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(process.env.PORT, '0.0.0.0');
 }

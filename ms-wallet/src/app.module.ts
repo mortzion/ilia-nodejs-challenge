@@ -1,10 +1,34 @@
+import 'reflect-metadata';
+
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { HealthCheckController } from './health-check.controller';
+import { TransactionModule } from './transactions/transaction.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Transaction } from './transactions/models/transaction.model';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
 
 @Module({
-  imports: [ConfigModule.forRoot()],
+  imports: [
+    ConfigModule.forRoot(),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: process.env.DB_HOST,
+      port: Number(process.env.DB_PORT ?? 5432),
+      username: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [Transaction],
+    }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+    }),
+    TransactionModule,
+  ],
   controllers: [HealthCheckController],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}
