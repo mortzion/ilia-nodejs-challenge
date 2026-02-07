@@ -39,6 +39,24 @@ export class UsersRepository {
     });
   }
 
+  async findById(id: string): Promise<User | null> {
+    return this.repository.findOne({
+      where: { id },
+    });
+  }
+
+  async update(user: User): Promise<User> {
+    try {
+      return await this.repository.save(user);
+    } catch (error) {
+      if (this.isEmailUniqueConstraintViolation(error)) {
+        throw new EmailAlreadyInUseException(user.email);
+      }
+
+      throw error;
+    }
+  }
+
   private isEmailUniqueConstraintViolation(error: any): boolean {
     return (
       'code' in error &&

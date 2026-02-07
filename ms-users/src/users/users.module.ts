@@ -5,11 +5,12 @@ import { UsersController } from './controllers/users.controller';
 import { AuthController } from './controllers/auth.controller';
 import { UsersRepository } from './repositories/transactions.repository';
 import { CreateUserAction } from './actions/create-user.action';
+import { UpdateUserAction } from './actions/update-user.action';
 import { LoginAction } from './actions/login.action';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController, AuthController],
-  providers: [UsersRepository, CreateUserAction, LoginAction],
+  providers: [UsersRepository, CreateUserAction, UpdateUserAction, LoginAction],
 })
 export class UsersModule {}
