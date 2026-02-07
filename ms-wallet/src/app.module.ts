@@ -6,6 +6,9 @@ import { HealthCheckController } from './health-check.controller';
 import { TransactionModule } from './transactions/transaction.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './transactions/models/transaction.model';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guards/auth.guard';
 
 @Module({
   imports: [
@@ -19,9 +22,13 @@ import { Transaction } from './transactions/models/transaction.model';
       database: process.env.DB_NAME,
       entities: [Transaction],
     }),
+    JwtModule.register({
+      global: true,
+      secret: process.env.JWT_SECRET,
+    }),
     TransactionModule,
   ],
   controllers: [HealthCheckController],
-  providers: [],
+  providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}
