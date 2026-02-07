@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, ForbiddenException, Get, Post, Query } from '@nestjs/common';
 import { CreateTransactionDto } from 'src/transactions/dtos/create-transaction.dto';
 import { ListTransactionsDto } from 'src/transactions/dtos/list-transactions.dto';
 import { CreateTransactionAction } from '../actions/create-transaction.action';
 import { ListTransactionAction } from '../actions/list-transactions.action';
 import { TransactionViewDto } from '../dtos/transaction-view.dto';
+import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -13,7 +14,12 @@ export class TransactionsController {
   ) {}
 
   @Post()
-  async createTransaction(@Body() dto: CreateTransactionDto) {
+  async createTransaction(
+    @CurrentUserId() currentUserId: string,
+    @Body() dto: CreateTransactionDto,
+  ) {
+    if (dto.user_id !== currentUserId) throw new ForbiddenException();
+
     const transaction = await this.createTransactionAction.execute(dto);
 
     return new TransactionViewDto(
@@ -25,7 +31,12 @@ export class TransactionsController {
   }
 
   @Get()
-  async listTransactions(@Query() dto: ListTransactionsDto) {
+  async listTransactions(
+    @CurrentUserId() currentUserId: string,
+    @Query() dto: ListTransactionsDto,
+  ) {
+    if (dto.user_id !== currentUserId) throw new ForbiddenException();
+
     const transactions = await this.listTransactionsAction.execute(dto);
 
     return transactions.map(
