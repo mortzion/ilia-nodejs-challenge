@@ -6,7 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
-import { HealthCheckController } from './health-check.controller';
+import { UsersModule } from './users/users.module';
+import { User } from './users/models/user.model';
 
 @Module({
   imports: [
@@ -18,14 +19,15 @@ import { HealthCheckController } from './health-check.controller';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [],
+      entities: [User],
     }),
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
     }),
+    UsersModule,
   ],
-  controllers: [HealthCheckController],
+  controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule {}

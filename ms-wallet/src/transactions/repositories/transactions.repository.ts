@@ -13,14 +13,14 @@ export class TransactionsRepository {
     return this.repository.save(transaction);
   }
 
-  list(user_id: number): Promise<Transaction[]> {
+  list(user_id: string): Promise<Transaction[]> {
     return this.repository.find({
       where: { user_id },
       order: { created_at: 'DESC' },
     });
   }
 
-  async balance(user_id: number): Promise<number> {
+  async balance(user_id: string): Promise<number> {
     const data = await this.repository
       .createQueryBuilder()
       .select(
