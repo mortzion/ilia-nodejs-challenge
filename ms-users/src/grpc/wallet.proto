@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package wallet;
+
+service WalletService {
+  rpc Balance (UserId) returns (Balance) {}
+}
+
+message UserId {
+  string user_id = 1;
+}
+
+message Balance {
+  float amount = 1;
+}

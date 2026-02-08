@@ -22,6 +22,7 @@ import { UserViewDto } from '../dtos/user-view.dto';
 import { Public } from 'src/decorators/public.decorator';
 import { CurrentUserId } from 'src/decorators/current-user.decorator';
 import { EmailAlreadyInUseException } from '../exceptions/email-already-in-use.exception';
+import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
 
 @Controller('users')
 export class UsersController {
@@ -122,6 +123,16 @@ export class UsersController {
   ) {
     if (id !== currentUserId) throw new ForbiddenException();
 
-    await this.deleteUserAction.execute(id);
+    try {
+      await this.deleteUserAction.execute(id);
+    } catch (error) {
+      if (error instanceof UserWithBalanceException) {
+        throw new ForbiddenException(
+          `The user ${error.user_id} has a positive balance and cannot be deleted. Clear his wallet first`,
+        );
+      }
+
+      throw error;
+    }
   }
 }

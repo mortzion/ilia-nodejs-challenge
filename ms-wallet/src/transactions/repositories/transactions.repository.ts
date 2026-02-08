@@ -34,6 +34,6 @@ export class TransactionsRepository {
       .where('user_id = :user_id', { user_id })
       .getRawOne<{ amount: number }>();
 
-    return data ? data.amount : 0;
+    return data?.amount ?? 0;
   }
 }

@@ -1,3 +1,3 @@
-export class BalanceViewDto {
+export class BalanceResponseDto {
   constructor(public amount: number) {}
 }

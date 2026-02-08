@@ -8,6 +8,7 @@ import { Transaction } from './transactions/models/transaction.model';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './guards/auth.guard';
+import { GRPCModule } from './grpc/grpc.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AuthGuard } from './guards/auth.guard';
       secret: process.env.JWT_SECRET,
     }),
     TransactionModule,
+    GRPCModule,
   ],
   controllers: [],
   providers: [{ provide: APP_GUARD, useClass: AuthGuard }],

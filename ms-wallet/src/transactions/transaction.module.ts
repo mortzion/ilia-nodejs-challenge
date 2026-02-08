@@ -17,5 +17,6 @@ import { GetBalanceAction } from './actions/get-balance.action';
     ListTransactionAction,
     GetBalanceAction,
   ],
+  exports: [CreateTransactionAction, ListTransactionAction, GetBalanceAction],
 })
 export class TransactionModule {}
