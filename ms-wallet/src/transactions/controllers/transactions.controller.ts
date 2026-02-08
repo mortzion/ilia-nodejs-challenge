@@ -1,10 +1,17 @@
-import { Body, Controller, ForbiddenException, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { CreateTransactionDto } from 'src/transactions/dtos/create-transaction.dto';
 import { ListTransactionsDto } from 'src/transactions/dtos/list-transactions.dto';
 import { CreateTransactionAction } from '../actions/create-transaction.action';
 import { ListTransactionAction } from '../actions/list-transactions.action';
 import { TransactionViewDto } from '../dtos/transaction-view.dto';
-import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
+import { CurrentUserId } from 'src/common/decorators/current-user-id.decorator';
 
 @Controller('transactions')
 export class TransactionsController {

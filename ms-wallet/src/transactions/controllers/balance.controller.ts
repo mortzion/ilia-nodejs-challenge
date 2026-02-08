@@ -2,7 +2,7 @@ import { Controller, ForbiddenException, Get, Query } from '@nestjs/common';
 import { GetBalanceDto } from '../dtos/get-balance.dto';
 import { GetBalanceAction } from '../actions/get-balance.action';
 import { BalanceResponseDto } from '../dtos/balance-response.dto';
-import { CurrentUserId } from 'src/decorators/current-user-id.decorator';
+import { CurrentUserId } from 'src/common/decorators/current-user-id.decorator';
 
 @Controller('balance')
 export class BalanceController {
