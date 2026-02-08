@@ -12,6 +12,7 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
+  app.enableCors({ methods: ['GET', 'POST', 'DELETE', 'PATCH'], origin: '*' });
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(process.env.PORT!, '0.0.0.0');
