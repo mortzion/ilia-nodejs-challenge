@@ -8,6 +8,6 @@ export class ListTransactionAction {
   constructor(private repository: TransactionsRepository) {}
 
   execute(dto: ListTransactionsDto): Promise<Transaction[]> {
-    return this.repository.list(dto.user_id);
+    return this.repository.list(dto);
   }
 }
