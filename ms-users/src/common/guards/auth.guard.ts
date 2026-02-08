@@ -6,10 +6,15 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
-import { IS_PUBLIC_KEY } from 'src/decorators/public.decorator';
+import { IS_PUBLIC_KEY } from 'src/common/decorators/public.decorator';
+import { FastifyRequest } from 'fastify';
 
-export interface AuthPayload {
+export interface JWTPayload {
   sub: string;
+}
+
+export interface FastifyRequestWithUser extends FastifyRequest {
+  user?: JWTPayload;
 }
 
 @Injectable()
@@ -27,14 +32,15 @@ export class AuthGuard implements CanActivate {
 
     if (isPublic) return true;
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<FastifyRequestWithUser>();
     const token = request.headers.authorization?.substring(7);
 
     if (!token) throw new UnauthorizedException();
 
     try {
-      request['user'] = await this.jwtService.verifyAsync<AuthPayload>(token);
+      const user = await this.jwtService.verifyAsync<JWTPayload>(token);
 
+      request.user = user;
       return true;
     } catch {
       throw new UnauthorizedException();

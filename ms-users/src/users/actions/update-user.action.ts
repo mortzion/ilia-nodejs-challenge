@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { hash } from 'bcrypt';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { UsersRepository } from '../repositories/transactions.repository';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 /**
  * The ms-users.yaml uses the PATCH verb for the endpoint but has all fields as required. To

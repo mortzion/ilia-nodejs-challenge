@@ -72,9 +72,12 @@ export class UsersRepository {
     return result.affected !== undefined && result.affected > 0;
   }
 
-  private isEmailUniqueConstraintViolation(error: any): boolean {
+  private isEmailUniqueConstraintViolation(error: unknown): boolean {
     return (
+      error != null &&
+      typeof error == 'object' &&
       'code' in error &&
+      'constraint' in error &&
       error.code == UNIQUE_VIOLATION_CODE &&
       error.constraint == EMAIL_UNIQUE_INDEX
     );
