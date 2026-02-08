@@ -10,6 +10,7 @@ import {
   Param,
   Patch,
   Post,
+  NotFoundException as HttpNotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dtos/create-user.dto';
 import { UpdateUserDto } from 'src/users/dtos/update-user.dto';
@@ -19,10 +20,11 @@ import { GetUserAction } from '../actions/get-user.action';
 import { ListUsersAction } from '../actions/list-users.action';
 import { DeleteUserAction } from '../actions/delete-user.action';
 import { UserViewDto } from '../dtos/user-view.dto';
-import { Public } from 'src/decorators/public.decorator';
-import { CurrentUserId } from 'src/decorators/current-user.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
+import { CurrentUserId } from 'src/common/decorators/current-user.decorator';
 import { EmailAlreadyInUseException } from '../exceptions/email-already-in-use.exception';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 @Controller('users')
 export class UsersController {
@@ -77,16 +79,22 @@ export class UsersController {
     @Param('id') id: string,
     @CurrentUserId() currentUserId: string,
   ) {
-    if (id !== currentUserId) throw new ForbiddenException();
+    try {
+      if (id !== currentUserId) throw new ForbiddenException();
 
-    const user = await this.getUserAction.execute(id);
+      const user = await this.getUserAction.execute(id);
 
-    return new UserViewDto(
-      user.id,
-      user.first_name,
-      user.last_name,
-      user.email,
-    );
+      return new UserViewDto(
+        user.id,
+        user.first_name,
+        user.last_name,
+        user.email,
+      );
+    } catch (error) {
+      if (error instanceof NotFoundException) throw new HttpNotFoundException();
+
+      throw error;
+    }
   }
 
   @Patch(':id')
@@ -107,6 +115,7 @@ export class UsersController {
         user.email,
       );
     } catch (error) {
+      if (error instanceof NotFoundException) throw new HttpNotFoundException();
       if (error instanceof EmailAlreadyInUseException) {
         throw new BadRequestException(`Email ${error.email} is already in use`);
       }
@@ -126,6 +135,7 @@ export class UsersController {
     try {
       await this.deleteUserAction.execute(id);
     } catch (error) {
+      if (error instanceof NotFoundException) throw new HttpNotFoundException();
       if (error instanceof UserWithBalanceException) {
         throw new ForbiddenException(
           `The user ${error.user_id} has a positive balance and cannot be deleted. Clear his wallet first`,

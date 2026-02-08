@@ -12,11 +12,9 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  if (!process.env.PORT) throw new Error('PORT env missing');
-
   app.useGlobalPipes(new ValidationPipe());
 
-  await app.listen(process.env.PORT, '0.0.0.0');
+  await app.listen(process.env.PORT!, '0.0.0.0');
 }
 
 void bootstrap();

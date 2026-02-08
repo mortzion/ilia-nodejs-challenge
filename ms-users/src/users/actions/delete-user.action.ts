@@ -1,14 +1,10 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  OnModuleInit,
-} from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { UsersRepository } from '../repositories/transactions.repository';
-import { WalletService } from 'src/grpc/services/wallet.service';
+import { WalletService } from 'src/common/grpc/services/wallet.service';
 import type { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 @Injectable()
 export class DeleteUserAction implements OnModuleInit {

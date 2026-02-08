@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../repositories/transactions.repository';
+import { NotFoundException } from '../exceptions/not-found.exception';
 
 @Injectable()
 export class GetUserAction {
