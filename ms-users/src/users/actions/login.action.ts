@@ -26,7 +26,13 @@ export class LoginAction {
       throw new InvalidCredentialsException();
     }
 
-    const access_token = await this.jwtService.signAsync({ sub: user.id });
+    const now = Math.floor(Date.now() / 1000);
+    const durationInHours = Number(process.env.JWT_EXP_IN_HOURS ?? 1);
+    const access_token = await this.jwtService.signAsync({
+      sub: user.id,
+      iat: now,
+      exp: now + durationInHours * 60 * 60,
+    });
 
     return new AccessTokenDto(user, access_token);
   }
