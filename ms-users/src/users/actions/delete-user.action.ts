@@ -1,28 +1,18 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../repositories/transactions.repository';
-import { WalletService } from 'src/common/grpc/services/wallet.service';
-import type { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
 import { NotFoundException } from '../exceptions/not-found.exception';
+import { WalletService } from 'src/grpc/services/wallet.service';
 
 @Injectable()
-export class DeleteUserAction implements OnModuleInit {
-  private walletService: WalletService;
-
+export class DeleteUserAction {
   constructor(
     private repository: UsersRepository,
-    @Inject('WALLET_PACKAGE') private client: ClientGrpc,
+    private walletService: WalletService,
   ) {}
 
-  onModuleInit() {
-    this.walletService = this.client.getService('WalletService');
-  }
-
   async execute(id: string) {
-    const balance = await firstValueFrom(
-      this.walletService.balance({ user_id: id }),
-    );
+    const balance = await this.walletService.balance({ user_id: id });
 
     if (balance.amount > 0) {
       throw new UserWithBalanceException(id, balance.amount);
