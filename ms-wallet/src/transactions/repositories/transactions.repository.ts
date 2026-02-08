@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from '../models/transaction.model';
 import { Repository } from 'typeorm';
+import { ListTransactionsDto } from '../dtos/list-transactions.dto';
 
 @Injectable()
 export class TransactionsRepository {
@@ -13,9 +14,9 @@ export class TransactionsRepository {
     return this.repository.save(transaction);
   }
 
-  list(user_id: string): Promise<Transaction[]> {
+  list(dto: ListTransactionsDto): Promise<Transaction[]> {
     return this.repository.find({
-      where: { user_id },
+      where: { user_id: dto.user_id, type: dto.type },
       order: { created_at: 'DESC' },
     });
   }
