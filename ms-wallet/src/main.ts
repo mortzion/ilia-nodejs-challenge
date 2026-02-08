@@ -20,7 +20,7 @@ async function bootstrap() {
       transport: Transport.GRPC,
       options: {
         package: 'wallet',
-        protoPath: join(__dirname, 'grpc/wallet.proto'),
+        protoPath: join(__dirname, '/grpc/wallet.proto'),
         url: process.env.GRPC_URL,
         loader: { keepCase: true },
       },

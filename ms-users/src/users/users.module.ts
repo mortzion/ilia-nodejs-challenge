@@ -27,7 +27,7 @@ import { ConfigService } from '@nestjs/config';
               transport: Transport.GRPC,
               options: {
                 package: 'wallet',
-                protoPath: join(__dirname, '../grpc/wallet.proto'),
+                protoPath: join(__dirname, '../common/grpc/wallet.proto'),
                 url: config.getOrThrow<string>('WALLET_GRPC_URL'),
                 loader: { keepCase: true },
               },

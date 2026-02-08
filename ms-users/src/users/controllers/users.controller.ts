@@ -21,7 +21,7 @@ import { ListUsersAction } from '../actions/list-users.action';
 import { DeleteUserAction } from '../actions/delete-user.action';
 import { UserViewDto } from '../dtos/user-view.dto';
 import { Public } from 'src/common/decorators/public.decorator';
-import { CurrentUserId } from 'src/common/decorators/current-user.decorator';
+import { CurrentUserId } from 'src/common/decorators/current-user-id.decorator';
 import { EmailAlreadyInUseException } from '../exceptions/email-already-in-use.exception';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
 import { NotFoundException } from '../exceptions/not-found.exception';

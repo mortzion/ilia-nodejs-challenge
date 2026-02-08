@@ -7,7 +7,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Transaction } from './transactions/models/transaction.model';
 import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from './guards/auth.guard';
+import { AuthGuard } from './common/guards/auth.guard';
 import { GRPCModule } from './grpc/grpc.module';
 
 @Module({

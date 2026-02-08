@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm';
+import { config } from 'dotenv';
 
-require('dotenv').config();
+config();
 
 export default new DataSource({
   synchronize: false,
