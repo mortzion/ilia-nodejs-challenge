@@ -8,6 +8,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { UsersModule } from './users/users.module';
 import { User } from './users/models/user.model';
+import { GRPCModule } from './grpc/grpc.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { User } from './users/models/user.model';
       global: true,
       secret: process.env.JWT_SECRET,
     }),
+    GRPCModule,
     UsersModule,
   ],
   controllers: [],
