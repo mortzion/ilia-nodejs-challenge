@@ -1,9 +1,7 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:18-alpine
     container_name: ms-wallet-postgres
-    ports:
-      - "${DB_PORT:-5432}:5432"
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
@@ -20,10 +18,19 @@ services:
       - PORT=${PORT}
     ports:
       - "${PORT}:${PORT}"
+      - "${GRPC_PORT}:${GRPC_PORT}"
     depends_on:
       - postgres
     volumes:
       - ./src:/app/src
+    networks:
+      - default
+      - ilia-nodejs-challenge
 
 volumes:
   postgres_wallet_data:
+
+networks:
+  ilia-nodejs-challenge:
+    name: ilia-nodejs-challenge
+    driver: bridge

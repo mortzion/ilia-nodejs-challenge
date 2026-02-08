@@ -23,4 +23,4 @@ RUN yarn run build
 EXPOSE ${PORT}
 
 # Command to run the application
-CMD ["node", "dist/main"]
+CMD ["yarn", "start:prod"]
