@@ -24,6 +24,7 @@ export class CreateUserAction {
       dto.password,
       CreateUserAction.PASSWORD_HASH_SALT_ROUNDS,
     );
+    user.deleted_at = null;
 
     return this.repository.insert(user);
   }
