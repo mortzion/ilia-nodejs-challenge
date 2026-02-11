@@ -7,6 +7,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  InternalServerErrorException,
   Param,
   Patch,
   Post,
@@ -25,6 +26,7 @@ import { CurrentUserId } from 'src/common/decorators/current-user-id.decorator';
 import { EmailAlreadyInUseException } from '../exceptions/email-already-in-use.exception';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
 import { NotFoundException } from '../exceptions/not-found.exception';
+import { WalletServiceUnavailableException } from '../exceptions/wallet-service-unavailable.exception';
 
 @Controller('users')
 export class UsersController {
@@ -139,6 +141,11 @@ export class UsersController {
       if (error instanceof UserWithBalanceException) {
         throw new ForbiddenException(
           `The user ${error.user_id} has a positive balance and cannot be deleted. Clear his wallet first`,
+        );
+      }
+      if (error instanceof WalletServiceUnavailableException) {
+        throw new InternalServerErrorException(
+          'Unable to check for balance before deleting user',
         );
       }
 

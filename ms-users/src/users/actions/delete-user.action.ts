@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersRepository } from '../repositories/transactions.repository';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
 import { NotFoundException } from '../exceptions/not-found.exception';
+import { WalletServiceUnavailableException } from '../exceptions/wallet-service-unavailable.exception';
 import { WalletService } from 'src/grpc/services/wallet.service';
 
 @Injectable()
@@ -12,7 +13,11 @@ export class DeleteUserAction {
   ) {}
 
   async execute(id: string) {
-    const balance = await this.walletService.balance({ user_id: id });
+    const balance = await this.walletService
+      .balance({ user_id: id })
+      .catch(() => {
+        throw new WalletServiceUnavailableException();
+      });
 
     if (balance.amount > 0) {
       throw new UserWithBalanceException(id, balance.amount);
