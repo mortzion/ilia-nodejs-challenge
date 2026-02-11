@@ -12,6 +12,7 @@ import { CreateTransactionAction } from '../actions/create-transaction.action';
 import { ListTransactionAction } from '../actions/list-transactions.action';
 import { TransactionViewDto } from '../dtos/transaction-view.dto';
 import { CurrentUserId } from 'src/common/decorators/current-user-id.decorator';
+import { OverdraftException } from '../exceptions/email-already-in-use.exception';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -27,14 +28,22 @@ export class TransactionsController {
   ) {
     if (dto.user_id !== currentUserId) throw new ForbiddenException();
 
-    const transaction = await this.createTransactionAction.execute(dto);
+    try {
+      const transaction = await this.createTransactionAction.execute(dto);
 
-    return new TransactionViewDto(
-      transaction.id,
-      transaction.amount,
-      transaction.user_id,
-      transaction.type,
-    );
+      return new TransactionViewDto(
+        transaction.id,
+        transaction.amount,
+        transaction.user_id,
+        transaction.type,
+      );
+    } catch (error) {
+      if (error instanceof OverdraftException) {
+        throw new ForbiddenException("Can't overdraft wallet");
+      }
+
+      throw error;
+    }
   }
 
   @Get()
