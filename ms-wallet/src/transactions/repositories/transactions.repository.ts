@@ -37,4 +37,22 @@ export class TransactionsRepository {
 
     return data?.amount ?? 0;
   }
+
+  async lockTransactionsForUpdate(user_id: string): Promise<void> {
+    await this.repository.findOne({
+      where: { user_id },
+      order: { created_at: 'DESC' },
+      lock: { mode: 'pessimistic_write' },
+    });
+  }
+
+  async transaction<T>(
+    callback: (repository: TransactionsRepository) => Promise<T>,
+  ): Promise<T> {
+    return await this.repository.manager.transaction((transaction) => {
+      const repository = transaction.getRepository(Transaction);
+
+      return callback(new TransactionsRepository(repository));
+    });
+  }
 }
