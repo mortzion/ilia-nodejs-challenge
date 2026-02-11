@@ -26,6 +26,8 @@ Authorization logic were added to the **GET /users/:id**, **PATCH /users/:id** a
 
 The **DELETE /users/:id** will soft delete the user instead of hard deleting for record keeping purposes. It will also check with the Wallet Microservice via gRPC if the user has a balance instead of deleting the user right away. It provides just a basic functionality but it's not complete. It still allows for race conditions between checking the balance and deleting the user and it also allows creating transaction after the user is deleted as long as the JWT is still valid. With more time those scenarios could be handled as well.
 
+A possible solution for the problem above is to use an event/message driven architecture for the communication between the microservices (gRPC could be kept for communications which requires a response). When a user is created the Users service generates an event signaling to other services that the user was created. The other services could react to this event to save the ID of the user in their internal database, along with other necessary information. When a user is deleted (after checking the balance) the Users service could emit an event signaling to other services that the user was deleted. The other services could react to this event by marking the user as deleted in their internal database and then ignore future requests from that user. If any microservice detects that the user could not be deleted due to some business rule (user still has balance due to race condition), then that service could inform the User service (possibly by another event) to revert the deletion (due to soft deletion) and inform the others services that the deletion was reverted.
+
 ## cURL
 
 #### POST /users
