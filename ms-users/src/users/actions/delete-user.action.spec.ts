@@ -5,6 +5,7 @@ import { UsersRepository } from '../repositories/transactions.repository';
 import { WalletService } from 'src/grpc/services/wallet.service';
 import { UserWithBalanceException } from '../exceptions/user-with-balance.exception';
 import { NotFoundException } from '../exceptions/not-found.exception';
+import { WalletServiceUnavailableException } from '../exceptions/wallet-service-unavailable.exception';
 
 describe('DeleteUserAction', () => {
   let action: DeleteUserAction;
@@ -46,6 +47,18 @@ describe('DeleteUserAction', () => {
 
     await expect(action.execute(user_id)).rejects.toThrow(
       UserWithBalanceException,
+    );
+    expect(walletService.balance).toHaveBeenCalledWith({ user_id });
+    expect(repository.delete).not.toHaveBeenCalled();
+  });
+
+  it('should throw WalletServiceUnavailableException when the gRPC call fails', async () => {
+    const user_id = 'uuid';
+
+    walletService.balance.mockRejectedValue(new Error());
+
+    await expect(action.execute(user_id)).rejects.toThrow(
+      WalletServiceUnavailableException,
     );
     expect(walletService.balance).toHaveBeenCalledWith({ user_id });
     expect(repository.delete).not.toHaveBeenCalled();
