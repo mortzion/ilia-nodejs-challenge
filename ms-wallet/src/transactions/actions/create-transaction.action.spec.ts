@@ -5,6 +5,8 @@ import { TransactionsRepository } from '../repositories/transactions.repository'
 import { CreateTransactionDto } from '../dtos/create-transaction.dto';
 import { Transaction, TransactionType } from '../models/transaction.model';
 import { OverdraftException } from '../exceptions/email-already-in-use.exception';
+import { Cache, CACHE_MANAGER } from '@nestjs/cache-manager';
+import { getBalanceCacheKey } from '../utils/cache-key';
 
 jest.mock('uuid');
 
@@ -13,6 +15,7 @@ import { v4 } from 'uuid';
 describe('CreateTransactionAction', () => {
   let action: CreateTransactionAction;
   let repository: jest.Mocked<TransactionsRepository>;
+  let cache: jest.Mocked<Cache>;
 
   const mockV4 = v4 as jest.MockedFunction<() => string>;
 
@@ -29,11 +32,16 @@ describe('CreateTransactionAction', () => {
             transaction: jest.fn(),
           },
         },
+        {
+          provide: CACHE_MANAGER,
+          useValue: { del: jest.fn().mockResolvedValue(undefined) },
+        },
       ],
     }).compile();
 
     action = module.get<CreateTransactionAction>(CreateTransactionAction);
     repository = module.get(TransactionsRepository);
+    cache = module.get(CACHE_MANAGER);
 
     jest.clearAllMocks();
   });
@@ -66,6 +74,7 @@ describe('CreateTransactionAction', () => {
         created_at: expect.anything() as Date,
       }),
     );
+    expect(cache.del).toHaveBeenCalledWith(getBalanceCacheKey(dto.user_id));
     expect(result).toEqual(expectedTransaction);
   });
 
@@ -103,6 +112,7 @@ describe('CreateTransactionAction', () => {
         created_at: expect.anything() as Date,
       }),
     );
+    expect(cache.del).toHaveBeenCalledWith(getBalanceCacheKey(dto.user_id));
     expect(result).toEqual(expectedTransaction);
   });
 
@@ -128,5 +138,6 @@ describe('CreateTransactionAction', () => {
     );
     expect(innerRepository.balance).toHaveBeenCalledWith(dto.user_id);
     expect(innerRepository.insert).not.toHaveBeenCalled();
+    expect(cache.del).not.toHaveBeenCalled();
   });
 });
