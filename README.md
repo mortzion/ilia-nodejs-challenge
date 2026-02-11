@@ -1,4 +1,9 @@
+## Preface
+
+The ms-users and ms-waller folders has the Users and Wallet microservices. Each folder has a readme describing how to run the service with Docker, and both has to be running at the same time for some of the features.
+
 # ília - Code Challenge NodeJS
+
 **English**
 ##### Before we start ⚠️
 **Please create a fork from this repository**
