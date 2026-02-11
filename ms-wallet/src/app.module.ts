@@ -9,10 +9,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './common/guards/auth.guard';
 import { GRPCModule } from './grpc/grpc.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({}),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -26,6 +27,9 @@ import { GRPCModule } from './grpc/grpc.module';
       global: true,
       secret: process.env.JWT_SECRET,
     }),
+    // In memory cache - Redis could be used in a production environment, especially
+    // if the cache could be shared between multiples instances of this service
+    CacheModule.register({ isGlobal: true }),
     TransactionModule,
     GRPCModule,
   ],
